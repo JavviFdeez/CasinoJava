@@ -3,12 +3,12 @@ package Model;
 import java.util.Objects;
 
 public class Card {
-    private String suit;
-    private String value;
+    private String suit;  // Palo
+    private String value; // Valor
 
-    public Card(String palo, String valor) {
-        this.suit = palo;
-        this.value = valor;
+    public Card(String suit, String value) {
+        this.suit = suit;
+        this.value = value;
     }
 
     public String getSuit() {
@@ -25,6 +25,17 @@ public class Card {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    // Obtener el valor numérico de la carta
+    public int getScore() {
+        if (value.equals("J") || value.equals("Q") || value.equals("K")) {
+            return 10;
+        } else if (value.equals("Ace")) {
+            return 11;
+        } else {
+            return Integer.parseInt(value);
+        }
     }
 
     @Override

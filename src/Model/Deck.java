@@ -23,14 +23,16 @@ public class Deck {
         }
     }
 
+    // Barajar el mazo
     public void shuffle() {
         Collections.shuffle(cards);
     }
 
-    public Card drawLetter() {
+    // Extraer una carta del mazo
+    public Card drawCard() {
         if (!cards.isEmpty()) {
-            Card drawnLetter = cards.remove(0);
-            return drawnLetter;
+            Card drawnCard = cards.remove(0);
+            return drawnCard;
         }
         return null;
     }

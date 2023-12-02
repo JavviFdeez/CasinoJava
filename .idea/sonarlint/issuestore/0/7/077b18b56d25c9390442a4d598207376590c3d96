@@ -1,0 +1,33 @@
+
+z	java:S135m"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆÿÿÿÿÿ8òÜ“àÂ1
+v	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(º›°Î8ˆİ“àÂ1
+u
+java:S1450"SRemove the "game" field and declare it as a local variable in the relevant methods.(Ä¿–øÿÿÿÿ8ÓŞ“àÂ1
+Z	java:S106)"9Replace this use of System.out or System.err by a logger.(É„¨âıÿÿÿÿ8çŞ“àÂ1
+U	java:S106/"9Replace this use of System.out or System.err by a logger.(Ğ’Ì•8çŞ“àÂ1
+Z	java:S1065"9Replace this use of System.out or System.err by a logger.(· ‘£ùÿÿÿÿ8ïŞ“àÂ1
+\
+java:S11177":Rename "player" which hides the field declared at line 13.(èš˜öÿÿÿÿÿ8ïŞ“àÂ1
+Z	java:S106W"9Replace this use of System.out or System.err by a logger.(ŒÉ¯¬ıÿÿÿÿ8Œß“àÂ1
+U	java:S106["9Replace this use of System.out or System.err by a logger.(¯¦¼ë8”ß“àÂ1
+Z	java:S106`"9Replace this use of System.out or System.err by a logger.(¼Ÿêşúÿÿÿÿ8¤ß“àÂ1
+T	java:S106f"9Replace this use of System.out or System.err by a logger.(ùŸ©G8´ß“àÂ1
+Z	java:S106o"9Replace this use of System.out or System.err by a logger.(ïù÷ùÿÿÿÿ8¹ß“àÂ1
+Z	java:S106p"9Replace this use of System.out or System.err by a logger.(Æ´¥ùÿÿÿÿ8¹ß“àÂ1
+U	java:S106t"9Replace this use of System.out or System.err by a logger.(¯àçâ8¹ß“àÂ1
+Z	java:S106y"9Replace this use of System.out or System.err by a logger.(¿‚ñ®ùÿÿÿÿ8½ß“àÂ1
+V	java:S106ƒ"9Replace this use of System.out or System.err by a logger.(ÄËéß8Éß“àÂ1
+U	java:S106‹"9Replace this use of System.out or System.err by a logger.(‹èS8¯ÀÁàÂ1
+[	java:S106"9Replace this use of System.out or System.err by a logger.(èÄ•‚ûÿÿÿÿ8¶ÀÁàÂ1
+[	java:S106"9Replace this use of System.out or System.err by a logger.(êøù¥øÿÿÿÿ8ÅïÆàÂ1
+V	java:S106“"9Replace this use of System.out or System.err by a logger.(¯àçâ8ÆïÆàÂ1
+[	java:S106›"9Replace this use of System.out or System.err by a logger.(§¥™Ÿşÿÿÿÿ8ÆïÆàÂ1
+[	java:S106¡"9Replace this use of System.out or System.err by a logger.(¬²—Ìúÿÿÿÿ8ÊïÆàÂ1
+[	java:S106¤"9Replace this use of System.out or System.err by a logger.(¤½µıÿÿÿÿ8 ß´áÂ1
+V	java:S106¨"9Replace this use of System.out or System.err by a logger.(¢öç8ğ”µáÂ1
+[	java:S106¯"9Replace this use of System.out or System.err by a logger.(õ¸Âÿÿÿÿÿ8İ»¹áÂ1
+V	java:S106¼"9Replace this use of System.out or System.err by a logger.(Ëó…8ê»¹áÂ1
+[	java:S106½"9Replace this use of System.out or System.err by a logger.(ôµ¸®ùÿÿÿÿ8ê»¹áÂ1
+[	java:S106¾"9Replace this use of System.out or System.err by a logger.(ßá×úÿÿÿÿ8ê»¹áÂ1
+J
+java:S1068"(Remove this unused "game" private field.(Ä¿–øÿÿÿÿ8Íß“àÂ1
