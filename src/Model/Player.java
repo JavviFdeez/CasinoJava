@@ -26,6 +26,9 @@ public class Player {
     }
 
     public List<Card> getHand() {
+        for (Card card : hand) {
+            card.printCard(card);
+        }
         return hand;
     }
 

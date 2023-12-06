@@ -37,6 +37,24 @@ public class Card {
             return Integer.parseInt(value);
         }
     }
+    // Método para imprimir una carta
+    public static void printCard(Card card) {
+        System.out.println("Tus 2 cartas asignadas: ");
+        String[] cardDesign = {
+                "┌─────────────────┐",
+                "│                 │",
+                "│        " + card.getSuit() + "        │",
+                "│                 │",
+                "│                 │",
+                "│       " + card.getValue() + "        │",
+                "│                 │",
+                "└─────────────────┘"
+        };
+
+        for (String line : cardDesign) {
+            System.out.println(line);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

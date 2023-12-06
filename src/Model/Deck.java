@@ -15,7 +15,7 @@ public class Deck {
     }
 
     private void initializeDeck() {
-        for (String suit : new String[]{"Hearts", "Spades", "Diamonds", "Clubs"}) {
+        for (String suit : new String[]{"♥", "♠", "♦", "♣"}) {
             for (String value : new String[]{"As", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}) {
                 Card card = new Card(suit, value);
                 cards.add(card);

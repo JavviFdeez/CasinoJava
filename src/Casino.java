@@ -1,13 +1,13 @@
-import View.WelcomeMessage;
-import View.Menu;
-
+import Controller.*;
+import View.*;
 
 public class Casino {
-
     public static void main(String[] args) {
         // Mostrar mensaje de bienvenida
-        WelcomeMessage.showMessage();
+        WelcomeMessage.showMessageWelcome();
 
-
+        // Inicianado el controlador principal
+        MainController mainController = new MainController();
+        mainController.start();
     }
 }
