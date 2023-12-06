@@ -29,26 +29,31 @@ public class Card {
 
     // Obtener el valor numérico de la carta
     public int getScore() {
-        if (value.equals("J") || value.equals("Q") || value.equals("K")) {
+        if ("J".equals(value) || "Q".equals(value) || "K".equals(value)) {
             return 10;
-        } else if (value.equals("Ace")) {
+        } else if ("Ace".equals(value)) {
             return 11;
         } else {
-            return Integer.parseInt(value);
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
         }
     }
+
     // Método para imprimir una carta
     public static void printCard(Card card) {
-        System.out.println("Tus 2 cartas asignadas: ");
         String[] cardDesign = {
-                "┌─────────────────┐",
-                "│                 │",
-                "│        " + card.getSuit() + "        │",
-                "│                 │",
-                "│                 │",
-                "│       " + card.getValue() + "        │",
-                "│                 │",
-                "└─────────────────┘"
+                "┌──────────────────┐",
+                "│ "+ card.getValue()+"           "+ card.getValue() + "    │",
+                "│ "+ card.getSuit() +"           "+ card.getSuit() +  "    │",
+                "│                  │",
+                "│        " + card.getSuit() + "         │",
+                "│                  │",
+                "│ "+ card.getValue()+"            "+ card.getValue() +"   │",
+                "│ "+ card.getSuit() +"            "+ card.getSuit() + "   │",
+                "└──────────────────┘"
         };
 
         for (String line : cardDesign) {

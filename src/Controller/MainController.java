@@ -27,7 +27,7 @@ public class MainController {
                     rules.showRules();
                     break;
                 case 4:
-                    FarewellMessage.showMessageFarrewell();
+                    UI.showMessageFarrewell();
                     System.exit(0);
                     break;
                 default:

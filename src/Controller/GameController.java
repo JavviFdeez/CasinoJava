@@ -11,18 +11,18 @@ public class GameController {
     private Game game;
     private Player player;
     private Scanner scanner;
-    private WelcomeMessage welcomeMessage;
+    private UI ui;
     private static final int salir = -1;
 
     public GameController() {
         this.deck = new Deck();
         this.scanner = new Scanner(System.in);
-        this.welcomeMessage = new WelcomeMessage();
+        this.ui = ui;
     }
 
     public void startGame() {
         // Mensaje de bienvenida al juego
-        welcomeMessage.showMessageStartGame();
+        UI.showMessageStartGame();
 
         // Verificar la edad del jugador
         verifyAge();
@@ -48,7 +48,7 @@ public class GameController {
             // Mostrar el dinero del jugador actual
             System.out.println("Dinero actual en la cartera: " + player.getMoneyWallet());
         } else {
-            System.out.println("Error: El jugador actual no está inicializado correctamente.");
+            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
         }
     }
 
@@ -63,8 +63,8 @@ public class GameController {
                 if (age >= 18) {
                     return true;
                 } else {
-                    System.out.println("Lo siento, debes tener al menos 18 años para jugar.");
-                    FarewellMessage.showMessageFarrewell();
+                    System.out.println("❌ Lo siento, debes tener al menos 18 años para jugar.");
+                    UI.showMessageFarrewell();
                     System.exit(0);
                 }
             } catch (NumberFormatException e) {
@@ -72,8 +72,8 @@ public class GameController {
                 intentos--;
             }
         }
-        System.out.println("Número de intentos agotado. Saliendo del juego.");
-        FarewellMessage.showMessageFarrewell();
+        System.out.println("❌ Número de intentos agotado. Saliendo del juego.");
+        UI.showMessageFarrewell();
         System.exit(0);
         return false;
     }
@@ -93,7 +93,7 @@ public class GameController {
         return players;
     }
 
-    private int takePlayerBet() {
+    private int getPlayerBet() {
         if (player != null) {
             System.out.println();
             System.out.print("\uD83D\uDCB5 ¿Cuánto dinero tienes en la cartera(€)?: ");
@@ -103,40 +103,49 @@ public class GameController {
             System.out.println();
 
             System.out.print("💎 ¿Cuánto deseas apostar?(Mínimo 1€ o escriba 'salir' para salir del juego): ");
-            int bet = scanner.nextInt();
-            scanner.nextLine();
-            System.out.println("Dinero apostado: "+bet);
-            System.out.println();
+            String betInput = scanner.nextLine();
 
-            if (bet == salir) {
-                FarewellMessage.showMessageFarrewell();
+            // Verificar si el usuario quiere salir
+            if (betInput.equalsIgnoreCase("salir")) {
+                UI.showMessageFarrewell();
                 return salir;
             }
 
-            // Verificar si la bet es válida
-            if (bet < 1 || bet > moneyWallet) {
-                System.out.println("❌ Apuesta no válida. Debes apostar al menos 1€ y no más de lo que tienes en la cartera.");
-                return takePlayerBet();  // Pedir una nueva apuesta
+            try {
+                // Intentar convertir la entrada a un entero
+                int bet = Integer.parseInt(betInput);
+
+                // Verificar si la bet es válida
+                if (bet < 1 || bet > moneyWallet) {
+                    System.out.println("❌ Apuesta no válida. Debes apostar al menos 1€ y NO más de lo que tienes en la cartera.");
+                    return getPlayerBet();  // Pedir una nueva apuesta
+                }
+
+                return bet;
+            } catch (NumberFormatException e) {
+                // Manejar la excepción si la entrada no es un entero
+                System.out.println("❌ Por favor, ingresa un número válido.");
+                return getPlayerBet();  // Pedir una nueva apuesta
             }
-            return bet;
         } else {
             System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
             return -1;
         }
     }
+
     private void playGame() {
         while (true) {
             // Reiniciar la mano del jugador y la baraja
             if (player != null) {
                 player.resetHand();
             } else {
-                System.out.println("Error: El jugador actual no está inicializado correctamente.");
+                System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
                 break;
             }
             deck.shuffle();
 
             // Hacer apuesta
-            int bet = takePlayerBet();
+            int bet = getPlayerBet();
             if (bet == -1) {
                 break;
             }
@@ -150,6 +159,18 @@ public class GameController {
 
             // Determinar el resultado y manejar el dinero
             handleResult(bet);
+
+            // Preguntar al jugador si desea jugar otra vez
+            System.out.println();
+            System.out.print("¿Quieres jugar otra vez? (1: Sí / 2: No): ");
+            int playAgain = scanner.nextInt();
+            scanner.nextLine();
+
+            if (playAgain != 1) {
+                // Salir del bucle si el jugador no quiere jugar otra vez
+                UI.showMessageFarrewell();
+                break;
+            }
         }
     }
 
@@ -157,10 +178,13 @@ public class GameController {
         while (true) {
             // Mostrar la mano actual del jugador
             if (player != null) {
-                System.out.println("Tu mano actual: " + player.getHand());
-                System.out.println("Puntaje actual: " + player.getScore());
+                System.out.println("🎲 Tu mano actual: " + player.getHand());
+                System.out.println("🎲 Puntaje actual: " + player.getScore());
+                System.out.println("1. Plantarse");
+                System.out.println("2. Continuar jugando");
+                System.out.println();
             } else {
-                System.out.println("Error: El jugador actual no está inicializado correctamente.");
+                System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
                 break;
             }
 
@@ -171,9 +195,7 @@ public class GameController {
             }
 
             // Preguntar al jugador si desea plantarse o continuar jugando
-            System.out.println("¿Quieres plantarte (1) o continuar jugando (2)?");
-            int decision = scanner.nextInt();
-            scanner.nextLine();
+            int decision = getDecisionFromPlayer();
 
             if (decision == 1) {
                 break;
@@ -187,18 +209,32 @@ public class GameController {
             player.addCard(newCard);
         }
     }
-
+    private int getDecisionFromPlayer() {
+        while (true) {
+            System.out.print("¿Quieres plantarte (1) o continuar jugando (2)?: ");
+            try {
+                int decision = Integer.parseInt(scanner.nextLine());
+                if (decision == 1 || decision == 2) {
+                    return decision;
+                } else {
+                    System.out.println("❌ Ingresa 1 para plantarte o 2 para continuar jugando.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Por favor, ingresa un número válido.");
+            }
+        }
+    }
     private void handleResult(int bet) {
         if (player != null) {
-            System.out.println("Fin del juego. Resultados:");
+            System.out.println();
+            System.out.println("Fin del juego. Resultados: ");
 
             // Mostrar la mano final del jugador
-            System.out.println("Tu mano final: " + player.getHand());
-            System.out.println("Puntaje final: " + player.getScore());
+            System.out.println("🎲 Puntaje final: " + player.getScore());
 
             // Determinar el resultado
             if (player.getScore() > 21) {
-                System.out.println("Te has pasado de 21. Has perdido.");
+                System.out.println("❌ Te has pasado de 21. Has perdido.");
 
                 // Si el jugador tiene un As que vale 11, intentar cambiarlo a 1 para evitar pasarse
                 player.handleAceOver21();
@@ -206,29 +242,29 @@ public class GameController {
                 // Si el jugador no tiene un As que pueda cambiar a 1, resta la apuesta al dinero de su cartera
                 player.setMoneyWallet(player.getMoneyWallet() - bet);
             } else if (player.getScore() == 21) {
-                System.out.println("¡Blackjack! Has ganado.");
+                System.out.println("\uD83C\uDFC6 ¡BlackJack! Has ganado.");
                 // Pagar 1.5 veces la apuesta por un Blackjack
                 player.setMoneyWallet(player.getMoneyWallet() + (int) (1.5 * bet));
             } else {
                 // Empate si la banca también tiene la misma puntuación
                 if (player.getScore() == getBankScore()) {
-                    System.out.println("Empate. Recuperas tu apuesta.");
+                    System.out.println("⚖\uFE0F Empate. Recuperas tu apuesta.");
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
                 } else if (player.getScore() > getBankScore()) {
-                    System.out.println("¡Felicidades! Has ganado.");
+                    System.out.println("\uD83C\uDFC6 ¡Felicidades! Has ganado.");
                     // Pagar la apuesta normal
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
                 } else {
-                    System.out.println("Has perdido.");
+                    System.out.println("❌ Has perdido.");
                     // Restar la apuesta al dinero de la cartera
                     player.setMoneyWallet(player.getMoneyWallet() - bet);
                 }
             }
 
             // Mostrar el dinero actual del jugador
-            System.out.println("Dinero en la cartera: " + player.getMoneyWallet());
+            System.out.println("💰 Dinero en la cartera: " + player.getMoneyWallet());
         } else {
-            System.out.println("Error: El jugador actual no está inicializado correctamente.");
+            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
         }
     }
 
@@ -241,18 +277,18 @@ public class GameController {
             }
             return score;
         } else {
-            System.out.println("Error: El jugador actual no está inicializado correctamente.");
+            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
             return 0;
         }
     }
 
     private void displayResults() {
         if (player != null) {
-            System.out.println("Resultados finales:");
-            System.out.println("Dinero final en la cartera: " + player.getMoneyWallet());
-            System.out.println("¡Gracias por jugar!");
+            System.out.println("\uD83C\uDFC6 Resultados finales:");
+            System.out.println("💰 Dinero final en la cartera: " + player.getMoneyWallet());
+            System.out.println("💎 ¡Gracias por jugar!");
         } else {
-            System.out.println("Error: El jugador actual no está inicializado correctamente.");
+            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
         }
     }
 }
