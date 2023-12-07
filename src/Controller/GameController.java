@@ -13,11 +13,14 @@ public class GameController {
     private Scanner scanner;
     private UI ui;
     private static final int salir = -1;
+    private List<Player> activePlayers;  // Jugadores activos en el juego actual
+
 
     public GameController() {
         this.deck = new Deck();
         this.scanner = new Scanner(System.in);
         this.ui = ui;
+        this.activePlayers = new ArrayList<>();
     }
 
     public void startGame() {
@@ -29,12 +32,10 @@ public class GameController {
 
         // Inicializar jugadores
         List<Player> players = initializePlayers();
+        player = players.get(0); // Asignar el primer jugador como jugador principal
 
         // Iniciar el juego
         game = new Game(players);
-
-        // Obtener el primer jugador de la lista (puedes ajustar esto según tu lógica)
-        player = game.getPlayers().get(0);
 
         // Realizar la lógica del juego
         playGame();
@@ -84,12 +85,26 @@ public class GameController {
         scanner.nextLine();
         List<Player> players = new ArrayList<>();
 
+        // Asegurar de que haya al menos un jugador humano y un croupier (IA)
+        if (numPlayers < 1 || numPlayers > 4) {
+            System.out.println("❌ Número de jugadores no válido. Debes tener entre 1 y 4 jugadores.");
+            initializePlayers();  // Pedir un nuevo ingreso
+            return players;
+        }
+
+        // Crea jugadores humanos
         for (int i = 1; i <= numPlayers; i++) {
             System.out.print("\uD83D\uDC64 Ingrese el Nombre del Jugador " + i + ": ");
             String playerName = scanner.nextLine();
             Player newPlayer = new Player(playerName);
             players.add(newPlayer);
         }
+
+        // Añade el croupier
+        players.add(new Player("Croupier"));
+
+        // Asigna la lista de jugadores a la lista de jugadores activos
+        activePlayers.addAll(players);
         return players;
     }
 
@@ -178,10 +193,9 @@ public class GameController {
         while (true) {
             // Mostrar la mano actual del jugador
             if (player != null) {
-                System.out.println("🎲 Tu mano actual: " + player.getHand());
+                System.out.println("🎲 Tu mano actual: ");
+                player.printHand();
                 System.out.println("🎲 Puntaje actual: " + player.getScore());
-                System.out.println("1. Plantarse");
-                System.out.println("2. Continuar jugando");
                 System.out.println();
             } else {
                 System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");

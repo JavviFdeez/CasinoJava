@@ -26,10 +26,14 @@ public class Player {
     }
 
     public List<Card> getHand() {
-        for (Card card : hand) {
-            card.printCard(card);
-        }
         return hand;
+    }
+
+    public void printHand() {
+        System.out.println("Mano de " + name + ":");
+        for (Card card : hand) {
+            Card.printCard(card);
+        }
     }
 
     public void setHand(List<Card> hand) {

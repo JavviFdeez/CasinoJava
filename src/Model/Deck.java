@@ -28,11 +28,15 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    // Extraer una carta del mazo
+    // Método para verificar si el mazo está vacío
+    public boolean isEmpty() {
+        return cards.isEmpty();
+    }
+
+    // Método para extraer una carta del mazo
     public Card drawCard() {
-        if (!cards.isEmpty()) {
-            Card drawnCard = cards.remove(0);
-            return drawnCard;
+        if (!isEmpty()) {
+            return cards.remove(0);
         }
         return null;
     }

@@ -8,7 +8,7 @@ public class MainController {
 
     public MainController() {
         this.menu = new Menu();
-        this.gameController = gameController;
+        this.gameController = new GameController();
         this.rules = new Rules();
     }
 
@@ -31,7 +31,7 @@ public class MainController {
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Opción no válida. Por favor, elige una opción del menú.");
+                    System.out.println("❌ Opción no válida. Por favor, elige una opción del menú.");
                     break;
             }
         }

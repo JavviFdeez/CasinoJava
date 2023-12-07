@@ -5,9 +5,10 @@ import java.util.Objects;
 
 public class Game {
     private List<Player> players;
-    private Deck deck = new Deck();
+    private Deck deck;
 
     public Game(List<Player> players) {
+        this.deck = new Deck();
         this.players = players;
     }
 
@@ -25,6 +26,11 @@ public class Game {
 
     public void setDeck(Deck deck) {
         this.deck = deck;
+    }
+
+    // Este método reinicia el mazo
+    public void resetDeck() {
+        this.deck = new Deck();
     }
 
     @Override

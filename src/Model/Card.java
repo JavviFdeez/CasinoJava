@@ -32,7 +32,7 @@ public class Card {
         if ("J".equals(value) || "Q".equals(value) || "K".equals(value)) {
             return 10;
         } else if ("Ace".equals(value)) {
-            return 11;
+            return 11;  // Puedes querer dejar que la lógica del juego maneje el As
         } else {
             try {
                 return Integer.parseInt(value);
