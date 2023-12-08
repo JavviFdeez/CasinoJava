@@ -30,6 +30,9 @@ public class GameController {
         // Verificar la edad del jugador
         verifyAge();
 
+        // Pedir al usuario que elija el nivel de dificultad
+        int difficultyLevel = chooseDifficultyLevel();
+
         // Inicializar jugadores
         List<Player> players = initializePlayers();
         player = players.get(0); // Asignar el primer jugador como jugador principal
@@ -38,7 +41,7 @@ public class GameController {
         game = new Game(players);
 
         // Realizar la lógica del juego
-        playGame();
+        playGame(difficultyLevel, players);
 
         // Mostrar resultados
         displayResults();
@@ -148,7 +151,29 @@ public class GameController {
         }
     }
 
-    private void playGame() {
+    private int chooseDifficultyLevel() {
+        int difficultyLevel;
+        do {
+            System.out.println("╔══════════════════════════════════════╗");
+            System.out.println(" · Seleccione el nivel de dificultad:");
+            System.out.println("  |1| Fácil ⭐");
+            System.out.println("  |2| Normal ⭐⭐");
+            System.out.println("  |3| Experto ⭐⭐⭐");
+            System.out.println("╚══════════════════════════════════════╝");
+            System.out.print("⭐ Ingrese el número de nivel de la dificultad: ");
+            System.out.println();
+            try {
+                difficultyLevel = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Error: ingrese un número válido.");
+                difficultyLevel = -1;  // Establecer un valor inválido para repetir el bucle
+            }
+        } while (difficultyLevel < 1 || difficultyLevel > 3);
+
+        return difficultyLevel;
+    }
+
+    private void playGame(int difficultyLevel, List<Player> players) {
         while (true) {
             // Reiniciar la mano del jugador y la baraja
             if (player != null) {
@@ -165,15 +190,14 @@ public class GameController {
                 break;
             }
 
-            // Repartir las dos primeras cartas
-            player.addCard(deck.drawCard());
-            player.addCard(deck.drawCard());
-
             // Jugar el turno
-            playTurn();
+            playTurn(difficultyLevel);
 
             // Determinar el resultado y manejar el dinero
             handleResult(bet);
+
+            // Jugar el turno del croupier (IA)
+            playCroupierTurn(difficultyLevel);
 
             // Preguntar al jugador si desea jugar otra vez
             System.out.println();
@@ -189,18 +213,32 @@ public class GameController {
         }
     }
 
-    private void playTurn() {
+    private void playTurn(int difficultyLevel) {
+        // Repartir las dos primeras cartas al croupier
+        Player croupier = activePlayers.get(activePlayers.size() - 1);
+        croupier.addCard(deck.drawCard());
+        croupier.addCard(deck.drawCard());
+
+        // Repartir las dos primeras cartas al jugador humano
+        player.addCard(deck.drawCard());
+        player.addCard(deck.drawCard());
+
+        // Jugar el turno del jugador
+        playPlayerTurn();
+
+        // Jugar el turno del croupier (IA)
+        playCroupierTurn(difficultyLevel);
+    }
+
+    private void playPlayerTurn() {
         while (true) {
             // Mostrar la mano actual del jugador
-            if (player != null) {
-                System.out.println("🎲 Tu mano actual: ");
-                player.printHand();
-                System.out.println("🎲 Puntaje actual: " + player.getScore());
-                System.out.println();
-            } else {
-                System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-                break;
-            }
+            System.out.println("🎲 Tu mano actual: ");
+            player.printHand();
+            System.out.println("🎲 Puntaje actual: " + player.getScore());
+            System.out.println("|1| Plantarse");
+            System.out.println("|2| Continuar jugando");
+            System.out.println();
 
             // Verificar si el jugador se pasa de 21
             if (player.getScore() > 21) {
@@ -223,6 +261,36 @@ public class GameController {
             player.addCard(newCard);
         }
     }
+
+    private void playCroupierTurn(int difficultyLevel) {
+        // Mostrar la mano del croupier
+        System.out.println("🎲 Mano del Croupier: ");
+        Player croupier = activePlayers.get(activePlayers.size() - 1);
+        croupier.printHand();
+        System.out.println("🎲 Puntaje del Croupier: " + croupier.getScore());
+
+        // Tomar decisiones de la IA
+        int decision = IA.decide(difficultyLevel, croupier);
+
+        // El croupier toma cartas hasta alcanzar el puntaje objetivo
+        while (decision == 2) {
+            // Tomar una nueva carta
+            Card newCard = deck.drawCard();
+            System.out.println("El Croupier ha sacado una carta: " + newCard);
+
+            // Agregar la carta a la mano del croupier
+            croupier.addCard(newCard);
+
+            // Tomar la próxima decisión de la IA
+            decision = IA.decide(difficultyLevel, croupier);
+        }
+
+        // Mostrar la mano final del croupier
+        System.out.println("🎲 Mano final del Croupier: ");
+        croupier.printHand();
+        System.out.println("🎲 Puntaje final del Croupier: " + croupier.getScore());
+    }
+
     private int getDecisionFromPlayer() {
         while (true) {
             System.out.print("¿Quieres plantarte (1) o continuar jugando (2)?: ");
