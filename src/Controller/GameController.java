@@ -44,17 +44,6 @@ public class GameController {
         // Realizar la lógica del juego
         playGame(difficultyLevel, players);
 
-        // Mostrar resultados
-        displayResults();
-    }
-
-    public void displayMoney() {
-        if (player != null) {
-            // Mostrar el dinero del jugador actual
-            System.out.println("Dinero actual en la cartera: " + player.getMoneyWallet());
-        } else {
-            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-        }
     }
 
     private boolean verifyAge() {
@@ -128,7 +117,8 @@ public class GameController {
         }
 
         // Añade el croupier
-        players.add(new Player("Croupier"));
+        croupier = new Player("Croupier");
+        players.add(croupier);
 
         // Asigna la lista de jugadores a la lista de jugadores activos
         activePlayers.addAll(players);
@@ -176,13 +166,16 @@ public class GameController {
     }
 
     private void playGame(int difficultyLevel, List<Player> players) {
+        int intentos = 3; // Número maximo de intentos
         while (true) {
             // Reiniciar la mano del jugador y la baraja
-            if (player != null) {
-                player.resetHand();
-            } else {
-                System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-                break;
+            for (Player currentPlayer : players) {
+                if (currentPlayer != null) {
+                    currentPlayer.resetHand();
+                } else {
+                    System.out.println("❌ Error: El jugador no está inicializado correctamente.");
+                    return;
+                }
             }
             deck.shuffle();
 
@@ -191,12 +184,10 @@ public class GameController {
             if (bet == -1) {
                 break;
             }
-
-            // Jugar el turno
-            playTurn(difficultyLevel);
-
-            // Jugar el turno del croupier (IA)
-            playCroupierTurn(difficultyLevel);
+            // Jugar el turno para cada jugador
+            for (Player currentPlayer : players) {
+                playTurn(currentPlayer, difficultyLevel);
+            }
 
             // Determinar el resultado y manejar el dinero
             handleResult(bet);
@@ -207,38 +198,56 @@ public class GameController {
             int playAgain = scanner.nextInt();
             scanner.nextLine();
 
-            if (playAgain != 1) {
-                // Salir del bucle si el jugador no quiere jugar otra vez
+            while (intentos > 0) {
+                if (playAgain == 1 || playAgain == 2) {
+                    // Salir del bucle si la opción es válida
+                    if (playAgain != 1) {
+                        UI.showMessageFarrewell();
+                    }
+                    break;
+                } else {
+                    System.out.println("❌ Opción no válida. Debes ingresar 1 para 'Sí' o 2 para 'No'. Intentos restantes: " + intentos);
+                    intentos--;
+                }
+            }
+
+            if (intentos == 0) {
+                // Salir del bucle si se agotan los intentos
+                System.out.println("❌ Número de intentos agotado. Saliendo del juego.");
                 UI.showMessageFarrewell();
                 break;
             }
         }
     }
 
-    private void playTurn(int difficultyLevel) {
-        // Repartir las dos primeras cartas al croupier
-        Player croupier = activePlayers.get(activePlayers.size() - 1);
-        croupier.addCard(deck.drawCard());
-        croupier.addCard(deck.drawCard());
+    private void playTurn(Player currentPlayer, int difficultyLevel) {
+        // Reiniciar la mano del jugador y la baraja
+        currentPlayer.resetHand();
+        deck.shuffle();
 
         // Repartir las dos primeras cartas al jugador humano
         player.addCard(deck.drawCard());
         player.addCard(deck.drawCard());
 
+        // Repartir las dos primeras cartas al croupier
+        Player croupier = activePlayers.get(activePlayers.size() - 1);
+        croupier.addCard(deck.drawCard());
+        croupier.addCard(deck.drawCard());
+
         // Jugar el turno del jugador
-        playPlayerTurn();
+        playPlayerTurn(currentPlayer);
 
         // Jugar el turno del croupier (IA)
         playCroupierTurn(difficultyLevel);
     }
 
-    private void playPlayerTurn() {
+    private void playPlayerTurn(Player currentPlayer) {
         while (true) {
             // Mostrar la mano actual del jugador
             System.out.println();
-            System.out.println("🎲 Tu mano actual (" + player.name + "): ");
+            System.out.println("🎲 Mano actual (" + currentPlayer.getName() + "): ");
             player.printHand();
-            System.out.println("🎲 Puntaje actual: " + player.getScore());
+            System.out.println("🎲 Puntaje actual: " + currentPlayer.getScore());
             System.out.println("|1| Plantarse");
             System.out.println("|2| Continuar jugando");
             System.out.println();
@@ -261,32 +270,29 @@ public class GameController {
             System.out.println("Has sacado una carta: " + newCard);
 
             // Agregar la carta a la mano del jugador
-            player.addCard(newCard);
+            currentPlayer.addCard(newCard);
         }
     }
 
     private void playCroupierTurn(int difficultyLevel) {
-        // Mostrar la mano del croupier
+        // Mostrar el puntuaje del croupier
         System.out.println();
-        System.out.println("🎲 Mano del Croupier: ");
         Player croupier = activePlayers.get(activePlayers.size() - 1);
-        croupier.printHand();
         System.out.println("🎲 Puntaje del Croupier: " + croupier.getScore());
 
         // Tomar decisiones de la IA
-        int decision = IA.decide(difficultyLevel, croupier);
+        int decision = IA.rule(difficultyLevel, croupier);
 
         // El croupier toma cartas hasta alcanzar el puntaje objetivo
         while (decision == 2) {
             // Tomar una nueva carta
             Card newCard = deck.drawCard();
-            System.out.println("El Croupier ha sacado una carta: " + newCard);
 
             // Agregar la carta a la mano del croupier
             croupier.addCard(newCard);
 
             // Tomar la próxima decisión de la IA
-            decision = IA.decide(difficultyLevel, croupier);
+            decision = IA.rule(difficultyLevel, croupier);
         }
     }
 
@@ -308,52 +314,42 @@ public class GameController {
     private void handleResult(int bet) {
         if (player != null) {
             System.out.println();
-            System.out.println("Fin del juego. Resultados: ");
+            System.out.println("\uD83C\uDFC1 Fin del juego \uD83C\uDFC1.");
+            System.out.println("Resultados \uD83D\uDCCA: ");
 
             // Mostrar la mano final del jugador
             System.out.println("🎲 Puntaje final: " + player.getScore());
 
             // Determinar el resultado
             if (player.getScore() > 21) {
-                System.out.println("❌ Te has pasado de 21. Has perdido.");
+                System.out.println("❌ | Te has pasado de 21. Has perdido.");
 
                 // Si el jugador tiene un As que vale 11, intentar cambiarlo a 1 para evitar pasarse
                 player.handleAceOver21();
-
                 // Si el jugador no tiene un As que pueda cambiar a 1, resta la apuesta al dinero de su cartera
                 player.setMoneyWallet(player.getMoneyWallet() - bet);
             } else if (player.getScore() == 21) {
-                System.out.println("\uD83C\uDFC6 ¡BlackJack! Has ganado.");
-                // Pagar 1.5 veces la apuesta por un Blackjack
+                System.out.println("\uD83C\uDFC6 ¡BlackJack! Has ganado!");
                 player.setMoneyWallet(player.getMoneyWallet() + (int) (1.5 * bet));
             } else {
                 // Empate si el cuprier también tiene la misma puntuación
                 if (player.getScore() == croupier.getScore()) {
-                    System.out.println("⚖\uFE0F Empate. Recuperas tu apuesta.");
+                    System.out.println("⚖\uFE0F | Empate. Recuperas tu apuesta.");
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
                 } else if (player.getScore() > croupier.getScore()) {
-                    System.out.println("\uD83C\uDFC6 ¡Felicidades! Has ganado.");
+                    System.out.println("\uD83C\uDFC6 | ¡Felicidades! Has ganado.");
                     // Pagar la apuesta normal
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
                 } else {
-                    System.out.println("❌ Has perdido.");
+                    System.out.println("❌ | Has perdido.");
                     // Restar la apuesta al dinero de la cartera
                     player.setMoneyWallet(player.getMoneyWallet() - bet);
                 }
             }
 
             // Mostrar el dinero actual del jugador
-            System.out.println("💰 Dinero en la cartera: " + player.getMoneyWallet());
-        } else {
-            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-        }
-    }
-
-    private void displayResults() {
-        if (player != null) {
-            System.out.println("\uD83C\uDFC6 Resultados finales:");
-            System.out.println("💰 Dinero final en la cartera: " + player.getMoneyWallet());
-            System.out.println("💎 ¡Gracias por jugar!");
+            int differenceMoney = player.getMoneyWallet() - bet;
+            System.out.println("💰 | Dinero en la cartera: " + bet + "= "+ differenceMoney);
         } else {
             System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
         }

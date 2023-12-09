@@ -21,7 +21,7 @@ public class MainController {
                     startGame();
                     break;
                 case 2:
-                    gameController.displayMoney();
+
                     break;
                 case 3:
                     rules.showRules();

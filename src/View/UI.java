@@ -41,5 +41,8 @@ public class UI {
         System.out.println("║ 🌟 Con gratitud, El equipo del Casino BlackJack Royale 🌟                         ║");
         System.out.println("╚═══════════════════════════════════════════════════════════════════════════════════╝");
         System.out.println();
+        System.out.println("🎉 ¡Próximamente! Estamos trabajando en un NUEVO juego de Póker. 🎉");
+        System.out.println("🃏 ¡Prepárate para la emoción del juego de cartas más POPULAR! 🃏");
+        System.out.println();
     }
 }
