@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Player {
-    private String name;
+    public String name;
     private List<Card> hand;
     private int moneyWallet;
     private int score;
@@ -30,7 +30,6 @@ public class Player {
     }
 
     public void printHand() {
-        System.out.println("Mano de " + name + ":");
         for (Card card : hand) {
             Card.printCard(card);
         }

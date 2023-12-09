@@ -13,7 +13,7 @@ public class Menu {
         try {
             System.out.println();
             System.out.println("╔══════════════════════════════════════╗");
-            System.out.println("║        === MENÚ PRINCIPAL  ===       ║");
+            System.out.println("║        === MENÚ PRINCIPAL ===        ║");
             System.out.println("║ = 1. Iniciar juego ⏯                 ║");
             System.out.println("║ == 2. Consultar su dinero actual \uD83D\uDCB0  ║");
             System.out.println("║ ==== 3. Consultar reglas \uD83D\uDCCA          ║");

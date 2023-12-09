@@ -14,6 +14,7 @@ public class GameController {
     private UI ui;
     private static final int salir = -1;
     private List<Player> activePlayers;  // Jugadores activos en el juego actual
+    private Player croupier;
 
 
     public GameController() {
@@ -82,7 +83,30 @@ public class GameController {
         return false;
     }
 
+    private int chooseDifficultyLevel() {
+        int difficultyLevel;
+        do {
+            System.out.println();
+            System.out.println("╔═══════════════════════════════════════════════════╗");
+            System.out.println(" · Seleccione el nivel de dificultad del crupier:");
+            System.out.println("  |1| Fácil ⭐");
+            System.out.println("  |2| Normal ⭐⭐");
+            System.out.println("  |3| Experto ⭐⭐⭐");
+            System.out.println("╚═══════════════════════════════════════════════════╝");
+            System.out.print("⭐ Ingrese el número de nivel de la dificultad: ");
+            try {
+                difficultyLevel = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Error: ingrese un número válido.");
+                difficultyLevel = -1;  // Establecer un valor inválido para repetir el bucle
+            }
+        } while (difficultyLevel < 1 || difficultyLevel > 3);
+
+        return difficultyLevel;
+    }
+
     private List<Player> initializePlayers() {
+        System.out.println();
         System.out.print("\uD83D\uDC64 Ingrese el Número de jugadores (entre 1 y 4): ");
         int numPlayers = scanner.nextInt();
         scanner.nextLine();
@@ -151,28 +175,6 @@ public class GameController {
         }
     }
 
-    private int chooseDifficultyLevel() {
-        int difficultyLevel;
-        do {
-            System.out.println("╔══════════════════════════════════════╗");
-            System.out.println(" · Seleccione el nivel de dificultad:");
-            System.out.println("  |1| Fácil ⭐");
-            System.out.println("  |2| Normal ⭐⭐");
-            System.out.println("  |3| Experto ⭐⭐⭐");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("⭐ Ingrese el número de nivel de la dificultad: ");
-            System.out.println();
-            try {
-                difficultyLevel = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Error: ingrese un número válido.");
-                difficultyLevel = -1;  // Establecer un valor inválido para repetir el bucle
-            }
-        } while (difficultyLevel < 1 || difficultyLevel > 3);
-
-        return difficultyLevel;
-    }
-
     private void playGame(int difficultyLevel, List<Player> players) {
         while (true) {
             // Reiniciar la mano del jugador y la baraja
@@ -193,11 +195,11 @@ public class GameController {
             // Jugar el turno
             playTurn(difficultyLevel);
 
-            // Determinar el resultado y manejar el dinero
-            handleResult(bet);
-
             // Jugar el turno del croupier (IA)
             playCroupierTurn(difficultyLevel);
+
+            // Determinar el resultado y manejar el dinero
+            handleResult(bet);
 
             // Preguntar al jugador si desea jugar otra vez
             System.out.println();
@@ -233,7 +235,8 @@ public class GameController {
     private void playPlayerTurn() {
         while (true) {
             // Mostrar la mano actual del jugador
-            System.out.println("🎲 Tu mano actual: ");
+            System.out.println();
+            System.out.println("🎲 Tu mano actual (" + player.name + "): ");
             player.printHand();
             System.out.println("🎲 Puntaje actual: " + player.getScore());
             System.out.println("|1| Plantarse");
@@ -264,6 +267,7 @@ public class GameController {
 
     private void playCroupierTurn(int difficultyLevel) {
         // Mostrar la mano del croupier
+        System.out.println();
         System.out.println("🎲 Mano del Croupier: ");
         Player croupier = activePlayers.get(activePlayers.size() - 1);
         croupier.printHand();
@@ -284,11 +288,6 @@ public class GameController {
             // Tomar la próxima decisión de la IA
             decision = IA.decide(difficultyLevel, croupier);
         }
-
-        // Mostrar la mano final del croupier
-        System.out.println("🎲 Mano final del Croupier: ");
-        croupier.printHand();
-        System.out.println("🎲 Puntaje final del Croupier: " + croupier.getScore());
     }
 
     private int getDecisionFromPlayer() {
@@ -328,11 +327,11 @@ public class GameController {
                 // Pagar 1.5 veces la apuesta por un Blackjack
                 player.setMoneyWallet(player.getMoneyWallet() + (int) (1.5 * bet));
             } else {
-                // Empate si la banca también tiene la misma puntuación
-                if (player.getScore() == getBankScore()) {
+                // Empate si el cuprier también tiene la misma puntuación
+                if (player.getScore() == croupier.getScore()) {
                     System.out.println("⚖\uFE0F Empate. Recuperas tu apuesta.");
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
-                } else if (player.getScore() > getBankScore()) {
+                } else if (player.getScore() > croupier.getScore()) {
                     System.out.println("\uD83C\uDFC6 ¡Felicidades! Has ganado.");
                     // Pagar la apuesta normal
                     player.setMoneyWallet(player.getMoneyWallet() + bet);
@@ -347,20 +346,6 @@ public class GameController {
             System.out.println("💰 Dinero en la cartera: " + player.getMoneyWallet());
         } else {
             System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-        }
-    }
-
-    private int getBankScore() {
-        if (player != null) {
-            // Puntuación de la banca
-            int score = 0;
-            for (Card card : player.getHand()) {
-                score += card.getScore();
-            }
-            return score;
-        } else {
-            System.out.println("❌ Error: El jugador actual no está inicializado correctamente.");
-            return 0;
         }
     }
 
