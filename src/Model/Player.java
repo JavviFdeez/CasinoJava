@@ -96,10 +96,10 @@ public class Player {
         return calculatedScore;
     }
 
-    public void handleAceOver21() {
+    public void handleAcesOver21() {
         for (Card card : hand) {
             if ("Ace".equals(card.getValue()) && card.getScore() == 11) {
-                setScore(1);
+                setScore(getScore() - 10);
                 System.out.println("Cambiando el valor del As a 1 para evitar pasarse.");
             }
         }

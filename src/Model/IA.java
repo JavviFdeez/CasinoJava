@@ -10,18 +10,18 @@ public class IA {
 
         switch (difficultyLevel) {
             case FACIL:
-                targetScore = 17;
+                targetScore = 19;
                 break;
             case NORMAL:
                 targetScore = 18;
                 break;
             case EXPERTO:
-                targetScore = 19;
+                targetScore = 17;
                 break;
             default:
-                throw new IllegalArgumentException("Nivel de dificultad no válido");
+                throw new IllegalArgumentException("❌ Nivel de dificultad no válido");
         }
 
-        return (croupier.getScore() < targetScore) ? 2 : 1;
+        return (croupier.getScore() <= targetScore) ? 2 : 1;
     }
 }

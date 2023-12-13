@@ -28,10 +28,6 @@ public class Game {
         this.deck = deck;
     }
 
-    // Este método reinicia el mazo
-    public void resetDeck() {
-        this.deck = new Deck();
-    }
 
     @Override
     public boolean equals(Object o) {

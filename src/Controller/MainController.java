@@ -12,21 +12,18 @@ public class MainController {
         this.rules = new Rules();
     }
 
-    public void start() {
+    public void start(int bet) {
         while (true) {
             int choice = menu.showMainMenu();
 
             switch (choice) {
                 case 1:
-                    startGame();
+                    gameController.startGame(bet);
                     break;
                 case 2:
-
-                    break;
-                case 3:
                     rules.showRules();
                     break;
-                case 4:
+                case 3:
                     UI.showMessageFarrewell();
                     System.exit(0);
                     break;
@@ -35,9 +32,5 @@ public class MainController {
                     break;
             }
         }
-    }
-    private void startGame() {
-        GameController gameController = new GameController();
-        gameController.startGame();
     }
 }
