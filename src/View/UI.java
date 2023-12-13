@@ -1,6 +1,7 @@
 package View;
-
+// Clase que gestiona la presentación de mensajes en la interfaz de usuario
 public class UI {
+    // Método para mostrar un mensaje de bienvenida al inicio del juego
     public static void showMessageWelcome() {
         System.out.println("╔════════════════════════════════════════════════════════════════════════════╗");
         System.out.println("               ♦ ♠ !BIENVENIDOS AL CASINO BLACKJACK ROYALE¡ ♥ ♣              ");
@@ -16,6 +17,7 @@ public class UI {
         System.out.println();
     }
 
+    // Método para mostrar un mensaje al inicio de un juego nuevo
     public static void showMessageStartGame() {
         System.out.println();
         System.out.println("=== INSTRUCCIONES BASICAS DEL BLACKJACK ===");
@@ -25,6 +27,7 @@ public class UI {
         System.out.println();
     }
 
+    // Método para mostrar un mensaje de despedida al salir del juego
     public static void showMessageFarrewell() {
         System.out.println();
         System.out.println("╔═══════════════════════════════════════════════════════════════════════════════════╗");

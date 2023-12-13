@@ -2,15 +2,18 @@ package Model;
 
 import java.util.Objects;
 
+// Clase que representa una carta de juego
 public class Card {
-    private String suit;  // Palo
-    private String value; // Valor
+    private String suit;  // Palo de la carta
+    private String value; // Valor de la carta
 
+    // Constructor que inicializa una carta con un palo y un valor dados
     public Card(String suit, String value) {
         this.suit = suit;
         this.value = value;
     }
 
+    // Métodos getter y setter para el palo de la carta
     public String getSuit() {
         return suit;
     }
@@ -19,6 +22,7 @@ public class Card {
         this.suit = suit;
     }
 
+    // Métodos getter y setter para el valor de la carta
     public String getValue() {
         return value;
     }
@@ -27,7 +31,7 @@ public class Card {
         this.value = value;
     }
 
-    // Obtener el valor numérico de la carta
+    // Método para obtener el valor numérico de la carta
     public int getScore() {
         if ("J".equals(value) || "Q".equals(value) || "K".equals(value)) {
             return 10;
@@ -42,7 +46,7 @@ public class Card {
         }
     }
 
-    // Método para imprimir una carta
+    // Método para imprimir una representación visual de la carta
     public static void printCard(Card card) {
         String[] cardDesign = {
                 "┌──────────────────┐",
@@ -61,6 +65,7 @@ public class Card {
         }
     }
 
+    // Método equals para comparar si dos cartas son iguales
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,6 +74,7 @@ public class Card {
         return Objects.equals(suit, card.suit) && Objects.equals(value, card.value);
     }
 
+    // Método toString para obtener una representación en cadena de la carta
     @Override
     public String toString() {
         return "Card{" +
