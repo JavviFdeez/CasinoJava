@@ -282,6 +282,11 @@ public class GameController {
 
     // Método para jugar el turno del croupier
     private void playCroupierTurn(int difficultyLevel) {
+        // Mostrar la mano actual del jugador
+        System.out.println();
+        System.out.println("🎲 Mano actual del croupier: ");
+        player.printHand();
+
         // Tomar decisiones de la IA
         int decision = IA.rule(difficultyLevel, croupier);
 
@@ -350,7 +355,7 @@ public class GameController {
             System.out.println("╚════════════════════════════════════════════════╝");
         } else {
             System.out.println(" ⚖️ | Empate. Nadie gana esta ronda.");
-            System.out.println(" 💰 | Dinero en la cartera: "+"Se devuelve la apuesta: "+ bet + "€");
+            System.out.println(" 💰 | Dinero en la cartera: "+ bet + "€");
             System.out.println("╚════════════════════════════════════════════════╝");
         }
     }
