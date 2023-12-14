@@ -301,6 +301,7 @@ public class GameController {
             // Tomar la próxima decisión de la IA
             decision = IA.rule(difficultyLevel, croupier);
         }
+
         // Mostrar cartas del croupier
         System.out.println();
         croupier.printHand();
