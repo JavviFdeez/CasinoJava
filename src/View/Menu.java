@@ -18,9 +18,11 @@ public class Menu {
             System.out.println();
             System.out.println("╔══════════════════════════════════════╗");
             System.out.println("║        === MENÚ PRINCIPAL ===        ║");
-            System.out.println("║ = 1. Iniciar BlackJack ⏯             ║");
-            System.out.println("║ == 2. Consultar reglas \uD83D\uDCCA            ║");
-            System.out.println("║ === 3. Salir \uD83D\uDEAA                      ║");
+            System.out.println("║ = 1. Jugar BlackJack ⏯               ║");
+            System.out.println("║ == 2. Jugar Poker ⏯                  ║");
+            System.out.println("║ === 3. Consultar reglas BlackJack \uD83D\uDCCA ║");
+            System.out.println("║ ==== 4. Consultar reglas Poker \uD83D\uDCCA    ║");
+            System.out.println("║ ===== 5. Salir \uD83D\uDEAA                    ║");
             System.out.println("╚══════════════════════════════════════╝");
             System.out.print("· Selecciona una opción: ");
 

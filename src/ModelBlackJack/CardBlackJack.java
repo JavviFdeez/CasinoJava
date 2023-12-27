@@ -1,14 +1,14 @@
-package Model;
+package ModelBlackJack;
 
 import java.util.Objects;
 
 // Clase que representa una carta de juego
-public class Card {
+public class CardBlackJack {
     private String suit;  // Palo de la carta
     private String value; // Valor de la carta
 
     // Constructor que inicializa una carta con un palo y un valor dados
-    public Card(String suit, String value) {
+    public CardBlackJack(String suit, String value) {
         this.suit = suit;
         this.value = value;
     }
@@ -47,16 +47,16 @@ public class Card {
     }
 
     // Método para imprimir una representación visual de la carta
-    public static void printCard(Card card) {
+    public static void printCard(CardBlackJack cardBlackJack) {
         String[] cardDesign = {
                 "┌──────────────────┐",
-                "│ "+ card.getValue()+"           "+ card.getValue() + "    │",
-                "│ "+ card.getSuit() +"           "+ card.getSuit() +  "    │",
+                "│ "+ cardBlackJack.getValue()+"           "+ cardBlackJack.getValue() + "    │",
+                "│ "+ cardBlackJack.getSuit() +"           "+ cardBlackJack.getSuit() +  "    │",
                 "│                  │",
-                "│        " + card.getSuit() + "         │",
+                "│        " + cardBlackJack.getSuit() + "         │",
                 "│                  │",
-                "│ "+ card.getValue()+"            "+ card.getValue() +"   │",
-                "│ "+ card.getSuit() +"            "+ card.getSuit() + "   │",
+                "│ "+ cardBlackJack.getValue()+"            "+ cardBlackJack.getValue() +"   │",
+                "│ "+ cardBlackJack.getSuit() +"            "+ cardBlackJack.getSuit() + "   │",
                 "└──────────────────┘"
         };
 
@@ -70,14 +70,14 @@ public class Card {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Card card = (Card) o;
-        return Objects.equals(suit, card.suit) && Objects.equals(value, card.value);
+        CardBlackJack cardBlackJack = (CardBlackJack) o;
+        return Objects.equals(suit, cardBlackJack.suit) && Objects.equals(value, cardBlackJack.value);
     }
 
     // Método toString para obtener una representación en cadena de la carta
     @Override
     public String toString() {
-        return "Card{" +
+        return "CardBlackJack{" +
                 "suit='" + suit + '\'' +
                 ", value='" + value + '\'' +
                 '}';

@@ -1,34 +1,34 @@
 package Controller;
 
-import Model.*;
+import ModelBlackJack.*;
 import View.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GameController {
-    private Deck deck;  // Baraja del juego
-    private Game game;  // Juego actual
-    private Player player;  // Jugador principal
+public class BlackJackController {
+    private DeckBlackJack deckBlackJack;  // Baraja del juego
+    private GameBlackJack gameBlackJack;  // Juego actual
+    private PlayerBlackJack playerBlackJack;  // Jugador principal
     private Scanner scanner;  // Objeto Scanner para entrada del usuario
     private UI ui;  // Interfaz de usuario
     private static final int salir = -1;  // Constante para salir del juego
-    private List<Player> activePlayers;  // Jugadores activos en el juego actual
-    private Player croupier;  // Representa al croupier
+    private List<PlayerBlackJack> activePlayerBlackJacks;  // Jugadores activos en el juego actual
+    private PlayerBlackJack croupier;  // Representa al croupier
 
-    // Constructor de la clase GameController
-    public GameController() {
+    // Constructor de la clase BlackJackController
+    public BlackJackController() {
         // Inicialización de variables al iniciar la clase
-        this.deck = new Deck();
+        this.deckBlackJack = new DeckBlackJack();
         this.scanner = new Scanner(System.in);
         this.ui = new UI();
-        this.activePlayers = new ArrayList<>();
+        this.activePlayerBlackJacks = new ArrayList<>();
     }
 
     // Método para iniciar el juego con una apuesta dada
     public void startGame(int bet) {
         // Mensaje de bienvenida al juego
-        UI.showMessageStartGame();
+        UIBlackJack.showMessageStartGame();
 
         // Verificar la edad del jugador
         verifyAge();
@@ -37,14 +37,14 @@ public class GameController {
         int difficultyLevel = chooseDifficultyLevel();
 
         // Inicializar jugadores
-        List<Player> players = initializePlayers();
-        player = players.get(0); // Asignar el primer jugador como jugador principal
+        List<PlayerBlackJack> playerBlackJacks = initializePlayers();
+        playerBlackJack = playerBlackJacks.get(0); // Asignar el primer jugador como jugador principal
 
         // Iniciar el juego
-        game = new Game(players);
+        gameBlackJack = new GameBlackJack(playerBlackJacks);
 
         // Realizar la lógica del juego
-        playGame(difficultyLevel, players, bet);
+        playGame(difficultyLevel, playerBlackJacks, bet);
     }
 
     // Método para verificar la edad del jugador
@@ -99,7 +99,7 @@ public class GameController {
     }
 
     // Método para inicializar la lista de jugadores
-    private List<Player> initializePlayers() {
+    private List<PlayerBlackJack> initializePlayers() {
         System.out.println();
         int numPlayers;
         do {
@@ -109,28 +109,28 @@ public class GameController {
             scanner.nextLine();
         } while (numPlayers < 1 || numPlayers > 4);
 
-        List<Player> players = new ArrayList<>();
+        List<PlayerBlackJack> playerBlackJacks = new ArrayList<>();
 
         // Crea jugadores humanos
         for (int i = 1; i <= numPlayers; i++) {
             System.out.print("\uD83D\uDC64 Ingrese el Nombre del Jugador " + i + ": ");
             String playerName = scanner.nextLine();
-            Player newPlayer = new Player(playerName);
-            players.add(newPlayer);
+            PlayerBlackJack newPlayerBlackJack = new PlayerBlackJack(playerName);
+            playerBlackJacks.add(newPlayerBlackJack);
         }
 
         // Añade el croupier
-        croupier = new Player("Croupier");
-        players.add(croupier);
+        croupier = new PlayerBlackJack("Croupier");
+        playerBlackJacks.add(croupier);
 
         // Asigna la lista de jugadores a la lista de jugadores activos
-        activePlayers.addAll(players);
-        return players;
+        activePlayerBlackJacks.addAll(playerBlackJacks);
+        return playerBlackJacks;
     }
 
     // Método para obtener la apuesta del jugador
     private int getPlayerBet() {
-        if (player != null) {
+        if (playerBlackJack != null) {
             // Obtener apuesta del jugador
             System.out.println();
             System.out.print("\uD83D\uDCB5 ¿Cuánto dinero tienes en la cartera(€)?: ");
@@ -171,14 +171,14 @@ public class GameController {
     }
 
     // Método principal para ejecutar el juego
-    private void playGame(int difficultyLevel, List<Player> players, int bet) {
+    private void playGame(int difficultyLevel, List<PlayerBlackJack> playerBlackJacks, int bet) {
         int intentos = 3; // Número máximo de intentos
         while (true) {
             // Reiniciar la mano del jugador y la baraja
-            for (Player currentPlayer : players) {
-                currentPlayer.resetHand();
+            for (PlayerBlackJack currentPlayerBlackJack : playerBlackJacks) {
+                currentPlayerBlackJack.resetHand();
             }
-            deck.shuffle();
+            deckBlackJack.shuffle();
 
             // Hacer apuesta
             bet = getPlayerBet();
@@ -187,22 +187,22 @@ public class GameController {
             }
 
             // Jugar el turno para cada jugador (excepto el croupier)
-            for (Player currentPlayer : players) {
-                if (currentPlayer != croupier) {
-                    playTurn(currentPlayer);
+            for (PlayerBlackJack currentPlayerBlackJack : playerBlackJacks) {
+                if (currentPlayerBlackJack != croupier) {
+                    playTurn(currentPlayerBlackJack);
                 }
             }
 
             // Repartir las dos primeras cartas al croupier
-            Player croupier = activePlayers.get(activePlayers.size() - 1);
-            croupier.addCard(deck.drawCard());
-            croupier.addCard(deck.drawCard());
+            PlayerBlackJack croupier = activePlayerBlackJacks.get(activePlayerBlackJacks.size() - 1);
+            croupier.addCard(deckBlackJack.drawCard());
+            croupier.addCard(deckBlackJack.drawCard());
 
             // Jugar el turno de croupier
             playCroupierTurn(difficultyLevel);
 
             // Determinar el resultado y manejar el dinero
-            handleFinalResult(bet, players, croupier);
+            handleFinalResult(bet, playerBlackJacks, croupier);
 
             // Preguntar al jugador si desea jugar otra vez
             System.out.println();
@@ -233,33 +233,33 @@ public class GameController {
     }
 
     // Método para jugar el turno de un jugador
-    private void playTurn(Player currentPlayer) {
+    private void playTurn(PlayerBlackJack currentPlayerBlackJack) {
         // Reiniciar la mano del jugador y la baraja
-        currentPlayer.resetHand();
-        deck.shuffle();
+        currentPlayerBlackJack.resetHand();
+        deckBlackJack.shuffle();
 
         // Repartir las dos primeras cartas al jugador humano
-        currentPlayer.addCard(deck.drawCard());
-        currentPlayer.addCard(deck.drawCard());
+        currentPlayerBlackJack.addCard(deckBlackJack.drawCard());
+        currentPlayerBlackJack.addCard(deckBlackJack.drawCard());
 
         // Jugar el turno del jugador
-        playPlayerTurn(currentPlayer);
+        playPlayerTurn(currentPlayerBlackJack);
     }
 
     // Método para jugar el turno de un jugador humano
-    private void playPlayerTurn(Player currentPlayer) {
+    private void playPlayerTurn(PlayerBlackJack currentPlayerBlackJack) {
         while (true) {
             // Mostrar la mano actual del jugador
             System.out.println();
-            System.out.println("🎲 Mano actual (" + currentPlayer.getName() + "): ");
-            player.printHand();
-            System.out.println("🎲 Puntaje actual: " + currentPlayer.getScore());
+            System.out.println("🎲 Mano actual (" + currentPlayerBlackJack.getName() + "): ");
+            playerBlackJack.printHand();
+            System.out.println("🎲 Puntaje actual: " + currentPlayerBlackJack.getScore());
             System.out.println("|1| Plantarse");
             System.out.println("|2| Continuar jugando");
             System.out.println();
 
             // Verificar si el jugador se pasa de 21
-            if (player.getScore() > 21) {
+            if (playerBlackJack.getScore() > 21) {
                 System.out.println("❌ Te has pasado de 21. Has perdido.");
                 break;
             }
@@ -272,11 +272,11 @@ public class GameController {
             }
 
             // Tomar una nueva carta
-            Card newCard = deck.drawCard();
-            System.out.println("Has sacado una carta: " + newCard);
+            CardBlackJack newCardBlackJack = deckBlackJack.drawCard();
+            System.out.println("Has sacado una carta: " + newCardBlackJack);
 
             // Agregar la carta a la mano del jugador
-            currentPlayer.addCard(newCard);
+            currentPlayerBlackJack.addCard(newCardBlackJack);
         }
     }
 
@@ -285,27 +285,27 @@ public class GameController {
         // Mostrar la mano actual del jugador
         System.out.println();
         System.out.println("🎲 Mano actual del croupier: ");
-        player.printHand();
+        playerBlackJack.printHand();
 
-        // Tomar decisiones de la IA
-        int decision = IA.rule(difficultyLevel, croupier);
+        // Tomar decisiones de la IABlackJack
+        int decision = IABlackJack.rule(difficultyLevel, croupier);
 
         // El croupier toma cartas hasta alcanzar el puntaje objetivo
         while (decision == 2) {
             // Tomar una nueva carta
-            Card newCard = deck.drawCard();
+            CardBlackJack newCardBlackJack = deckBlackJack.drawCard();
 
             // Agregar la carta a la mano del croupier
-            croupier.addCard(newCard);
+            croupier.addCard(newCardBlackJack);
 
-            // Tomar la próxima decisión de la IA
-            decision = IA.rule(difficultyLevel, croupier);
+            // Tomar la próxima decisión de la IABlackJack
+            decision = IABlackJack.rule(difficultyLevel, croupier);
         }
 
         // Mostrar cartas del croupier
         System.out.println();
         croupier.printHand();
-        Player croupier = activePlayers.get(activePlayers.size() - 1);
+        PlayerBlackJack croupier = activePlayerBlackJacks.get(activePlayerBlackJacks.size() - 1);
 
         // Mostrar el puntuaje del croupier
         System.out.println("🎲 Puntaje actual del Croupier: " + croupier.getScore());
@@ -329,7 +329,7 @@ public class GameController {
     }
 
     // Método para manejar el resultado final del juego
-    private void handleFinalResult(int bet, List<Player> players, Player croupier) {
+    private void handleFinalResult(int bet, List<PlayerBlackJack> playerBlackJacks, PlayerBlackJack croupier) {
         System.out.println();
         System.out.println("╔════════════════════════════════════════════════╗");
         System.out.println("              === \uD83C\uDFC1 Fin del juego \uD83C\uDFC1 ===");
@@ -337,21 +337,21 @@ public class GameController {
         System.out.println(" · Resultados \uD83D\uDCCA: ");
 
         // Mostrar las manos finales de todos los jugadores
-        for (Player currentPlayer : players) {
-            if (currentPlayer != croupier) {
-                System.out.println(" 🎲 | Puntaje final de " + currentPlayer.getName() + ": " + currentPlayer.getScore());
+        for (PlayerBlackJack currentPlayerBlackJack : playerBlackJacks) {
+            if (currentPlayerBlackJack != croupier) {
+                System.out.println(" 🎲 | Puntaje final de " + currentPlayerBlackJack.getName() + ": " + currentPlayerBlackJack.getScore());
             }
         }
 
         System.out.println(" 🎲 | Puntaje final del croupier"  + ": " + croupier.getScore());
 
         // Determinar el ganador
-        Player winner = determineWinner(players, bet, croupier);
+        PlayerBlackJack winner = determineWinner(playerBlackJacks, bet, croupier);
 
         // Manejar el dinero del ganador y mostrar resultados
         if (winner != null) {
             System.out.println(" \uD83C\uDF89 | ¡El ganador es " + winner.getName() + "!");
-            winner.setMoneyWallet(winner.getMoneyWallet() + (int) (1.5 * bet) * players.size());
+            winner.setMoneyWallet(winner.getMoneyWallet() + (int) (1.5 * bet) * playerBlackJacks.size());
             System.out.println(" 💰 | Dinero en la cartera: +" + bet + "€");
             System.out.println("╚════════════════════════════════════════════════╝");
         } else {
@@ -361,22 +361,22 @@ public class GameController {
         }
     }
 
-    private Player determineWinner(List<Player> players, int bet, Player croupier) {
-        Player winner = null;
+    private PlayerBlackJack determineWinner(List<PlayerBlackJack> playerBlackJacks, int bet, PlayerBlackJack croupier) {
+        PlayerBlackJack winner = null;
         int maxScore = 0;
 
-        for (Player currentPlayer : players) {
-            if (currentPlayer.getScore() <= 21 && currentPlayer.getScore() > maxScore) {
-                winner = currentPlayer;
-                maxScore = currentPlayer.getScore();
+        for (PlayerBlackJack currentPlayerBlackJack : playerBlackJacks) {
+            if (currentPlayerBlackJack.getScore() <= 21 && currentPlayerBlackJack.getScore() > maxScore) {
+                winner = currentPlayerBlackJack;
+                maxScore = currentPlayerBlackJack.getScore();
 
                 // Si el jugador tiene un As que vale 11, intentar cambiarlo a 1 para evitar pasarse
-                currentPlayer.handleAcesOver21();
+                currentPlayerBlackJack.handleAcesOver21();
 
                 // Si el jugador no tiene un As que pueda cambiar a 1, resta la apuesta al dinero de su cartera
-                currentPlayer.setMoneyWallet(currentPlayer.getMoneyWallet() - bet);
+                currentPlayerBlackJack.setMoneyWallet(currentPlayerBlackJack.getMoneyWallet() - bet);
             }else {
-                System.out.println(" ❌ | Te has pasado de 21." + currentPlayer.getName());
+                System.out.println(" ❌ | Te has pasado de 21." + currentPlayerBlackJack.getName());
             }
         }
 
